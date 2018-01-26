@@ -79,7 +79,7 @@ public class AppServiceTest {
         assertEquals(0, entityDefService.addSubEntityToEntityDef("e2", "se2", ""));
 
         assertNotNull(entityDefService.getSubEntityOfEntityDef("e1", "se1"));
-        assertNotNull(entityDefService.getAttributeOfEntityDef("e2", "se1"));
+        assertNotNull(entityDefService.getSubEntityOfEntityDef("e2", "se1"));
         assertNull(entityDefService.getAttributeOfEntityDef("e3", "se3"));
         assertNull(entityDefService.getAttributeOfEntityDef("e1", "se3"));
         assertNull(entityDefService.getAttributeOfEntityDef("e1", ""));
@@ -103,11 +103,11 @@ public class AppServiceTest {
     public void testAddAttributeToEntity() throws Exception {
         assertEquals(-1, entityService.addAttributeToEntity("v1", "", ""));
         assertEquals(0, entityService.addAttributeToEntity("v1", "a1", "v1a1"));
-        assertEquals(0, entityService.addAttributeToEntity("v1", "a2", "v2a2"));
+        assertEquals(0, entityService.addAttributeToEntity("v1", "a2", "v1a2"));
         assertEquals(-1, entityService.addAttributeToEntity("v1", "a1", "v1a1"));
 
-        assertThat(entityService.getAttributeOfEntity("v1","a1"), is(equals("v1a1")));
-        assertThat(entityService.getAttributeOfEntity("v1","a2"), is(equals("v1a2")));
+        assertTrue(entityService.getAttributeOfEntity("v1","a1").equals("v1a1"));
+        assertTrue(entityService.getAttributeOfEntity("v1","a2").equals("v1a2"));
         assertNull(entityService.getAttributeOfEntity("v1","a3"));
     }
 

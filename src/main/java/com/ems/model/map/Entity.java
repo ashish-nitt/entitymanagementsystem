@@ -9,7 +9,7 @@ public class Entity {
     private final String entityType;
     private final String entityName;
     private final ConcurrentHashMap<String, String> attributes;
-    private final ConcurrentHashMap<String, Entity> subEntities;
+    private final ConcurrentHashMap<String, String> subEntities;
 
     public Entity(String entityType, String entityName) {
         this.entityType = entityType;
@@ -30,7 +30,7 @@ public class Entity {
         return attributes;
     }
 
-    public ConcurrentHashMap<String, Entity> getSubEntities() {
+    public ConcurrentHashMap<String, String> getSubEntities() {
         return subEntities;
     }
 }
