@@ -1,6 +1,8 @@
 package com.ems.service.impl;
 
+import com.ems.repository.EntityRepositorySimpleMap;
 import com.ems.service.EntityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,58 +10,61 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EntityServiceImpl implements EntityService {
+    @Autowired
+    EntityRepositorySimpleMap entityRepositorySimpleMap;
+
     @Override
     public int addEntity(String entityDefName, String entityName) {
-        return 0;
+        return entityRepositorySimpleMap.addEntity(entityDefName, entityName);
     }
 
     @Override
     public int addAttributeToEntity(String entityName, String attributeDefName, String value) {
-        return 0;
+        return entityRepositorySimpleMap.addAttributeToEntity(entityName, attributeDefName, value);
     }
 
     @Override
     public int addSubEntityToEntity(String entityName, String subEntityDefName, String value) {
-        return 0;
+        return entityRepositorySimpleMap.addSubEntityToEntity(entityName, subEntityDefName, value);
     }
 
     @Override
     public String getEntity(String entityName) {
-        return null;
+        return entityRepositorySimpleMap.getEntity(entityName);
     }
 
     @Override
     public String getAttributeOfEntity(String entityName, String attributeDefName) {
-        return null;
+        return entityRepositorySimpleMap.getAttributeOfEntity(entityName, attributeDefName);
     }
 
     @Override
     public String getSubEntityOfEntity(String entityName, String subEntityDefName) {
-        return null;
+        return entityRepositorySimpleMap.getSubEntityOfEntity(entityName, subEntityDefName);
     }
 
     @Override
     public int updateAttributeToEntity(String entityName, String attributeDefName, String value) {
-        return 0;
+        return entityRepositorySimpleMap.updateAttributeToEntity(entityName, attributeDefName, value);
     }
 
     @Override
     public int updateSubEntityToEntity(String entityName, String subEntityDefName, String value) {
-        return 0;
+        return entityRepositorySimpleMap.updateSubEntityToEntity(entityName, subEntityDefName, value);
     }
 
     @Override
     public int deleteEntity(String entityName) {
-        return 0;
+        return entityRepositorySimpleMap.deleteEntity(entityName);
     }
 
     @Override
     public int deleteAttributeFromEntity(String entityName, String attributeDefName) {
-        return 0;
+        return entityRepositorySimpleMap.deleteAttributeFromEntity(entityName, attributeDefName);
     }
 
     @Override
     public int deleteSubEntityFromEntity(String entityName, String subEntityDefName) {
-        return 0;
+        return entityRepositorySimpleMap.deleteSubEntityFromEntity(entityName, subEntityDefName);
     }
 }
