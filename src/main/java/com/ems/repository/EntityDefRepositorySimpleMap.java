@@ -17,7 +17,9 @@ public class EntityDefRepositorySimpleMap {
     }
 
     public int addNewEntityDef(String entityDefName) {
-        return 0;
+        EntityDef ed = new EntityDef(entityDefName);
+        entityDefMap.putIfAbsent(entityDefName, ed);
+        return ((entityDefMap.get(entityDefName) == ed) ? 0 : -1);
     }
 
     
@@ -42,6 +44,7 @@ public class EntityDefRepositorySimpleMap {
 
     
     public String getEntityDef(String entityDefName) {
-        return null;
+        EntityDef ed = entityDefMap.get(entityDefName);
+        return ((ed != null) ? ed.getEntityName() : null);
     }
 }

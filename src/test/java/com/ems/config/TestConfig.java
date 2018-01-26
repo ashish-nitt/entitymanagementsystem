@@ -1,5 +1,7 @@
 package com.ems.config;
 
+import com.ems.repository.EntityDefRepositorySimpleMap;
+import com.ems.repository.EntityRepositorySimpleMap;
 import com.ems.service.EntityDefService;
 import com.ems.service.EntityService;
 import com.ems.service.impl.EntityDefServiceImpl;
@@ -20,5 +22,15 @@ public class TestConfig {
     @Bean
     public EntityService getEntityService() {
         return new EntityServiceImpl();
+    }
+
+    @Bean
+    public EntityDefRepositorySimpleMap getEntityDefRepositorySimpleMap() {
+        return new EntityDefRepositorySimpleMap();
+    }
+
+    @Bean
+    public EntityRepositorySimpleMap getEntityRepositorySimpleMap() {
+        return new EntityRepositorySimpleMap();
     }
 }

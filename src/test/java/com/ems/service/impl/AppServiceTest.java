@@ -3,6 +3,7 @@ package com.ems.service.impl;
 import com.ems.config.TestConfig;
 import com.ems.service.EntityDefService;
 import com.ems.service.EntityService;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,6 +24,7 @@ public class AppServiceTest {
     @Autowired
     EntityService entityService;
 
+    @Test
     public void test() throws Exception{
         testAddNewEntityDef();
         testAddAttributeToEntityDef();
