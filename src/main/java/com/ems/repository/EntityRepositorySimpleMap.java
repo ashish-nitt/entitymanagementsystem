@@ -84,26 +84,58 @@ public class EntityRepositorySimpleMap {
 
     
     public int updateAttributeToEntity(String entityName, String attributeDefName, String value) {
-        return 0;
+        Entity entity = entityMap.get(entityName);
+        if (entity != null) {
+            if (null != entity.getAttributes().get(attributeDefName)) {
+                entity.getAttributes().put(attributeDefName, value);
+                if (entity.getAttributes().get(attributeDefName) == value) return 0;
+            }
+        }
+        return -1;
     }
 
     
     public int updateSubEntityToEntity(String entityName, String subEntityDefName, String value) {
-        return 0;
+        Entity entity = entityMap.get(entityName);
+        if (entity != null) {
+            if (null != entity.getSubEntities().get(subEntityDefName)) {
+                entity.getSubEntities().put(subEntityDefName, value);
+                if (entity.getSubEntities().get(subEntityDefName) == value) return 0;
+            }
+        }
+        return -1;
     }
 
     
     public int deleteEntity(String entityName) {
-        return 0;
+        if (null != entityMap.get(entityName)) {
+            entityMap.remove(entityName);
+            if (entityMap.get(entityName) == null) return 0;
+        }
+        return -1;
     }
 
     
     public int deleteAttributeFromEntity(String entityName, String attributeDefName) {
-        return 0;
+        Entity entity = entityMap.get(entityName);
+        if (entity != null) {
+            if (null != entity.getAttributes().get(attributeDefName)) {
+                entity.getAttributes().remove(attributeDefName);
+                if (entity.getAttributes().get(attributeDefName) == null) return 0;
+            }
+        }
+        return -1;
     }
 
     
     public int deleteSubEntityFromEntity(String entityName, String subEntityDefName) {
-        return 0;
+        Entity entity = entityMap.get(entityName);
+        if (entity != null) {
+            if (null != entity.getSubEntities().get(subEntityDefName)) {
+                entity.getSubEntities().remove(subEntityDefName);
+                if (entity.getSubEntities().get(subEntityDefName) == null) return 0;
+            }
+        }
+        return -1;
     }
 }
