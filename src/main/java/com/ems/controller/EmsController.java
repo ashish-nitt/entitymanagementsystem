@@ -19,33 +19,68 @@ public class EmsController {
     @Autowired
     private EntityService entityService;
 
-    @RequestMapping(value = "/hello/{user}", method = RequestMethod.GET)
-    public String hello(@PathVariable("user") String user) {
-        return "hello " + user;
+    @RequestMapping(value = "/about", method = RequestMethod.GET)
+    public String hello() {
+        return "This service helps entity management in server using REST calls";
     }
 
     //Create DbEntity Definition
-    @RequestMapping(value = "/entityTypes/{entityTypeName}", method = RequestMethod.POST)
-    public EmsEntityType addNewEntityType(@PathVariable("entityTypeName") String entityTypeName,
+    @RequestMapping(value = "/entitytypes/{entityType}", method = RequestMethod.POST)
+    public EmsEntityType addNewEntityType(@PathVariable("entityType") String entityType,
                                    HttpServletResponse response){
         System.out.println("EmsController.addNewEntityType");
-        System.out.println("entityTypeName = [" + entityTypeName + "]");
-        EmsEntityType emsEntityType = entityService.addNewEntityType(entityTypeName);
+        System.out.println("entityType = [" + entityType + "]");
+        EmsEntityType emsEntityType = entityService.addNewEntityType(entityType);
         if (emsEntityType != null)
             response.setStatus(HttpServletResponse.SC_CREATED);
         else
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return emsEntityType;
     }
-    EmsAttributeType addAttributeOfEntityType(String entityTypeName, String attributeTypeName, String attributeType, String renderingEngineDetails){return null;}
-    EmsEntityType addSubEntityOfEntityType(String entityTypeName, String subEntityName, String subEntityType){return null;}
+
+    @RequestMapping(value = "/attrtypes/{entityType}/{attributeName}", method = RequestMethod.POST)
+    public EmsAttributeType addAttributeOfEntityType(
+            @PathVariable("entityType") String entityType,
+            @PathVariable("attributeName") String attributeName,
+            @RequestBody String requestBody,
+            HttpServletResponse response) {
+        System.out.println("EmsController.addAttributeOfEntityType");
+        System.out.println("entityType = [" + entityType + "], attributeName = [" + attributeName + "], requestBody = [" + requestBody + "], response = [" + response + "]");
+        String attributeType = "";
+        String renderingEngineDetails = "";
+        EmsAttributeType AtrributeType = entityService.addAttributeOfEntityType(entityType, attributeName, attributeType, renderingEngineDetails);
+        if (AtrributeType != null)
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        else
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return AtrributeType;
+    }
+
+    @RequestMapping(value = "/entitytypes/{entityType}/{subEntityName}", method = RequestMethod.POST)
+    EmsEntityType addSubEntityOfEntityType(
+            @PathVariable("entityType") String entityType,
+            @PathVariable("subEntityName") String subEntityName,
+            @RequestBody String requestBody,
+            HttpServletResponse response){
+        System.out.println("EmsController.addSubEntityOfEntityType");
+        System.out.println("entityType = [" + entityType + "], subEntityName = [" + subEntityName + "], requestBody = [" + requestBody + "], response = [" + response + "]");
+        String subEntityType = "";
+        String renderingEngineDetails = "";
+        EmsEntityType emsEntityType = entityService.addSubEntityOfEntityType(entityType, subEntityName, subEntityType);
+        if (emsEntityType != null)
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        else
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return emsEntityType;
+    }
     //Read DbEntity Definition
-    @RequestMapping(value = "/entityTypeCheck/{entityTypeName}", method = RequestMethod.GET)
-    public Boolean hasEntityType(@PathVariable String entityTypeName,
-                          HttpServletResponse response){
+    @RequestMapping(value = "/check/entitytype/{entityType}", method = RequestMethod.GET)
+    public Boolean hasEntityType(
+            @PathVariable("entityType") String entityType,
+            HttpServletResponse response){
         System.out.println("EmsController.hasEntityType");
-        System.out.println("entityTypeName = [" + entityTypeName + "]");
-        if (entityService.hasEntityType(entityTypeName)) {
+        System.out.println("entityTypeName = [" + entityType + "]");
+        if (entityService.hasEntityType(entityType)) {
             response.setStatus(HttpServletResponse.SC_OK);
             return true;
         } else {
@@ -53,27 +88,81 @@ public class EmsController {
             return false;
         }
     }
-    Boolean hasAttributeOfEntityType(String entityTypeName, String attributeTypeName){return null;}
-    Boolean hasSubEntityOfEntityType(String subEntityName, String subEntityType){return null;}
-    @RequestMapping(value = "/entityTypes/{entityTypeName}", method = RequestMethod.GET)
-    public EmsEntityType getEntityType(@PathVariable String entityTypeName,
-                                HttpServletResponse response){
+    @RequestMapping(value = "/check/attrtypes/{entityType}/{attributeName}", method = RequestMethod.GET)
+    public Boolean hasAttributeOfEntityType(
+            @PathVariable("entityType") String entityType,
+            @PathVariable("attributeName") String attributeName,
+            HttpServletResponse response) {
+        System.out.println("EmsController.instance initializer");
+        System.out.println("entityTypeName = [" + entityType + "], attributeName = [" + attributeName + "]");
+        if (entityService.hasAttributeOfEntityType(entityType, attributeName)) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return true;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return false;
+        }
+    }
+
+    @RequestMapping(value = "/check/subentitytypes/{entityTypeName}/{subEntityName}", method = RequestMethod.GET)
+    public Boolean hasSubEntityOfEntityType(
+            @PathVariable("entityType") String entityType,
+            @PathVariable("subEntityName") String subEntityName,
+            HttpServletResponse response) {
+        System.out.println("EmsController.hasSubEntityOfEntityType");
+        System.out.println("entityType = [" + entityType + "], subEntityType = [" + subEntityName + "], response = [" + response + "]");
+        if (entityService.hasAttributeOfEntityType(entityType, subEntityName)) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return true;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return false;
+        }
+    }
+    @RequestMapping(value = "/entitytypes/{entityType}", method = RequestMethod.GET)
+    public EmsEntityType getEntityType(
+            @PathVariable("entityType") String entityType,
+            HttpServletResponse response){
         System.out.println("EmsController.getEntityType");
-        System.out.println("entityTypeName = [" + entityTypeName + "]");
-        EmsEntityType emsEntityType = entityService.getEntityType(entityTypeName);
+        System.out.println("entityTypeName = [" + entityType + "]");
+        EmsEntityType emsEntityType = entityService.getEntityType(entityType);
         if (emsEntityType != null)
             response.setStatus(HttpServletResponse.SC_OK);
         else
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return emsEntityType;
     }
-    EmsAttributeType getAttributeOfEntityType(String entityTypeName, String attributeTypeName){return null;}
-    EmsEntityType getSubEntityOfEntityType(String subEntityName, String subEntityType){return null;}
-    //EmsEntity Create
-    Long addEntity(String entityTypeName){
-        return null;
+    @RequestMapping(value = "/attrtypes/{entityType}/{attributeName}", method = RequestMethod.GET)
+    public EmsAttributeType getAttributeOfEntityType(
+            @PathVariable("entityType") String entityType,
+            @PathVariable("attributeName") String attributeName,
+            HttpServletResponse response) {
+        System.out.println("EmsController.getAttributeOfEntityType");
+        System.out.println("entityType = [" + entityType + "], attributeName = [" + attributeName + "]");
+        EmsAttributeType emsAttributeType = entityService.getAttributeOfEntityType(entityType, attributeName);
+        if (emsAttributeType != null)
+            response.setStatus(HttpServletResponse.SC_OK);
+        else
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return emsAttributeType;
     }
-    Long addEntity(String entityTypeName, String entityName){return null;}
+    @RequestMapping(value = "/subentitytypes/{entityType}/{subEntityName}", method = RequestMethod.GET)
+    public EmsEntityType getSubEntityOfEntityType(
+            @PathVariable("entityType") String entityType,
+            @PathVariable("subEntityName") String subEntityName,
+            HttpServletResponse response) {
+        System.out.println("EmsController.getSubEntityOfEntityType");
+        System.out.println("entityType = [" + entityType + "], subEntityName = [" + subEntityName + "]");
+        EmsEntityType emsEntityType = entityService.getSubEntityOfEntityType(entityType, subEntityName);
+        if (emsEntityType != null)
+            response.setStatus(HttpServletResponse.SC_OK);
+        else
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return emsEntityType;
+    }
+    //EmsEntity Create
+    Long addEntity(@PathVariable("entityType") String entityTypeName){return null;}
+    Long addEntity(@PathVariable("entityType") String entityTypeName, String entityName){return null;}
     String addAttributeOfEntity(String entityName, String attributeName, String value){return null;}
     Long addSubEntityOfEntity(String entityName, String subEntityName, Long emsSubEntityRef){return null;}
     String addAttributeOfEntity(Long entityId, String attributeName, String value){return null;}
