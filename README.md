@@ -1,7 +1,8 @@
 # entitymanagementsystem
 Entity Management using REST api
 
-This is a REST based entity management system
+This is a sample REST based entity management system.
+Already very good implementation of similar systems exist in open source, this is just for learning purpose.
 
 Capabilities:
 1. This entity management systems allows free nesting of different types and sub types.
@@ -13,3 +14,12 @@ Capabilities:
 7. The names of entities and subentities are like ids and should be unique to be referred further.
 8. Attribute names must be unique within the entity as attributes are not shared.
 9. Attribute names, Entity names and Subentity names are different from their definitions.
+
+Current Status:
+The over all application framework is ready.
+REST end points for add and get of entitytypes are working fine.
+For the remaining the code is there and tested with junit.
+Only the REST endpoint to service call has to be coded.
+It is in very half baked state to be treated as an enterprise application and is just for view purpose.
+It is not intended for pull request till further notice.
+
