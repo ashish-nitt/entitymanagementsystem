@@ -1,110 +1,236 @@
 package com.ems.service.impl;
 
-import com.ems.model.map.EntityDef;
-import com.ems.repository.EntityDefRepositorySimpleMap;
-import com.ems.repository.EntityRepositorySimpleMap;
+import com.ems.model.EmsAttributeType;
+import com.ems.model.EmsEntityType;
+import com.ems.repository.EmsEntityRepository;
 import com.ems.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-/**
- * Created by Ashish on 26-01-2018.
- */
 @Service
 public class EntityServiceImpl implements EntityService {
     @Autowired
-    EntityRepositorySimpleMap entityRepositorySimpleMap;
+    EmsEntityRepository repository;
 
-    @Autowired
-    EntityDefRepositorySimpleMap entityDefRepositorySimpleMap;
-
-    @Override
-    public int addEntity(String entityDefName, String entityName) {
-        if (!StringUtils.isEmpty(entityName)) {
-            return entityRepositorySimpleMap.addEntity(entityDefName, entityName);
-        } else {
-            return -1;
+    private Boolean isEmptyArguments(String... args) {
+        for (String arg : args){
+            if (StringUtils.isEmpty(arg)) return true;
         }
+        return false;
     }
 
     @Override
-    public int addAttributeToEntity(String entityName, String attributeDefName, String value) {
-        if (! StringUtils.isEmpty(attributeDefName))
-            return entityRepositorySimpleMap.addAttributeToEntity(entityName, attributeDefName, value);
-        else
-            return -1;
+    public EmsEntityType addNewEntityType(String entityTypeName) {
+        if (isEmptyArguments(entityTypeName)) return null;
+        return repository.addNewEntityType(entityTypeName);
     }
 
     @Override
-    public int addSubEntityToEntity(String entityName, String subEntityDefName, String value) {
-        if (! StringUtils.isEmpty(subEntityDefName)) {
-            return entityRepositorySimpleMap.addSubEntityToEntity(entityName, subEntityDefName, value);
-        } else
-            return -1;
+    public EmsAttributeType addAttributeOfEntityType(String entityTypeName, String attributeName, String attributeType, String renderingEngineDetails) {
+        if (isEmptyArguments(entityTypeName, attributeName)) return null;
+        return repository.addAttributeOfEntityType(entityTypeName, attributeName, attributeType, renderingEngineDetails);
     }
 
     @Override
-    public String getEntity(String entityName) {
-        if (!StringUtils.isEmpty(entityName))
-            return entityRepositorySimpleMap.getEntity(entityName);
-        else
-            return null;
+    public EmsEntityType addSubEntityOfEntityType(String entityTypeName, String subEntityName, String subEntityType) {
+        if (isEmptyArguments(entityTypeName, subEntityName, subEntityType)) return null;
+        return repository.addSubEntityOfEntityType(entityTypeName, subEntityName, subEntityType);
     }
 
     @Override
-    public String getAttributeOfEntity(String entityName, String attributeDefName) {
-        if (!StringUtils.isEmpty(entityName))
-            return entityRepositorySimpleMap.getAttributeOfEntity(entityName, attributeDefName);
-        else
-            return null;
+    public EmsEntityType getEntityType(String entityTypeName) {
+        if (isEmptyArguments(entityTypeName)) return null;
+        return repository.getEntityType(entityTypeName);
     }
 
     @Override
-    public String getSubEntityOfEntity(String entityName, String subEntityDefName) {
-        if (! StringUtils.isEmpty(subEntityDefName))
-            return entityRepositorySimpleMap.getSubEntityOfEntity(entityName, subEntityDefName);
-        else
-            return null;
+    public EmsAttributeType getAttributeOfEntityType(String entityTypeName, String attributeTypeName) {
+        if (isEmptyArguments(entityTypeName)) return null;
+        return repository.getAttributeOfEntityType(entityTypeName, attributeTypeName);
     }
 
     @Override
-    public int updateAttributeToEntity(String entityName, String attributeDefName, String value) {
-        if (! StringUtils.isEmpty(attributeDefName))
-            return entityRepositorySimpleMap.updateAttributeToEntity(entityName, attributeDefName, value);
-        else
-            return -1;
+    public EmsEntityType getSubEntityOfEntityType(String entityTypeName, String subEntityTypeName) {
+        if (isEmptyArguments(entityTypeName)) return null;
+        return repository.getSubEntityOfEntityType(entityTypeName, subEntityTypeName);
     }
 
     @Override
-    public int updateSubEntityToEntity(String entityName, String subEntityDefName, String value) {
-        if (! StringUtils.isEmpty(subEntityDefName))
-            return entityRepositorySimpleMap.updateSubEntityToEntity(entityName, subEntityDefName, value);
-        else
-            return -1;
+    public Long addEntity(String entityTypeName) {
+        if (isEmptyArguments(entityTypeName)) return null;
+        return repository.addEntity(entityTypeName);
     }
 
     @Override
-    public int deleteEntity(String entityName) {
-        if (! StringUtils.isEmpty(entityName))
-            return entityRepositorySimpleMap.deleteEntity(entityName);
-        else
-            return -1;
+    public Long addEntity(String entityTypeName, String entityName) {
+        if (isEmptyArguments(entityTypeName, entityName)) return null;
+        return repository.addEntity(entityTypeName, entityName);
     }
 
     @Override
-    public int deleteAttributeFromEntity(String entityName, String attributeDefName) {
-        if (! StringUtils.isEmpty(attributeDefName))
-            return entityRepositorySimpleMap.deleteAttributeFromEntity(entityName, attributeDefName);
-        else
-            return -1;
+    public String addAttributeOfEntity(String entityName, String attributeName, String value) {
+        if (isEmptyArguments(entityName, attributeName)) return null;
+        return repository.addAttributeOfEntity(entityName, attributeName, value);
     }
 
     @Override
-    public int deleteSubEntityFromEntity(String entityName, String subEntityDefName) {
-        if (! StringUtils.isEmpty(subEntityDefName))
-            return entityRepositorySimpleMap.deleteSubEntityFromEntity(entityName, subEntityDefName);
-        else
-            return -1;
+    public Long addSubEntityOfEntity(String entityName, String subEntityName, Long emsSubEntityRef) {
+        if (isEmptyArguments(entityName, subEntityName)) return null;
+        return repository.addSubEntityOfEntity(entityName, subEntityName, emsSubEntityRef);
+    }
+
+    @Override
+    public String addAttributeOfEntity(Long entityId, String attributeName, String value) {
+        if (isEmptyArguments(attributeName, attributeName)) return null;
+        return repository.addAttributeOfEntity(entityId, attributeName, value);
+    }
+
+    @Override
+    public Long addSubEntityOfEntity(Long entityId, String subEntityName, Long emsSubEntityRef) {
+        if (isEmptyArguments(subEntityName)) return null;
+        return null;
+    }
+
+    @Override
+    public Boolean hasEntity(Long EntityId) {
+        return false;
+    }
+
+    @Override
+    public Boolean hasEntity(String entityName) {
+        if (isEmptyArguments(entityName)) return null;
+        return repository.hasEntity(entityName);
+    }
+
+    @Override
+    public Boolean hasAttributeOfEntity(String entityName, String attributeName) {
+        if (isEmptyArguments(entityName)) return null;
+        return false;
+    }
+
+    @Override
+    public Boolean hasSubEntityOfEntity(String entityName, String subEntityName) {
+        if (isEmptyArguments(entityName)) return null;
+        return false;
+    }
+
+    @Override
+    public Boolean hasAttributeOfEntity(Long entityId, String attributeName) {
+        if (isEmptyArguments(attributeName)) return null;
+        return false;
+    }
+
+    @Override
+    public Boolean hasSubEntityOfEntity(Long entityId, String subEntityName) {
+        if (isEmptyArguments(subEntityName)) return null;
+        return false;
+    }
+
+    @Override
+    public Long getEntity(String entityName) {
+        if (isEmptyArguments(entityName)) return null;
+        return repository.getEntity(entityName);
+    }
+
+    @Override
+    public String getAttributeOfEntity(String entityName, String attributeName) {
+        if (isEmptyArguments(entityName, attributeName)) return null;
+        return repository.getAttributeOfEntity(entityName, attributeName);
+    }
+
+    @Override
+    public Long getSubEntityOfEntity(String entityName, String subEntityName) {
+        if (isEmptyArguments(entityName, subEntityName)) return null;
+        return repository.getSubEntityOfEntity(entityName, subEntityName);
+    }
+
+    @Override
+    public String getAttributeOfEntity(Long entityId, String attributeName) {
+        if (isEmptyArguments(attributeName, attributeName)) return null;
+        return repository.getAttributeOfEntity(entityId, attributeName);
+    }
+
+    @Override
+    public Long getSubEntityOfEntity(Long entityId, String subEntityName) {
+        if (isEmptyArguments(subEntityName, subEntityName)) return null;
+        return repository.getSubEntityOfEntity(entityId, subEntityName);
+    }
+
+    @Override
+    public String updateAttributeOfEntity(String entityName, String attributeName, String value) {
+        if (isEmptyArguments(attributeName, attributeName)) return null;
+        return repository.updateAttributeOfEntity(entityName, attributeName, value);
+    }
+
+    @Override
+    public String updateAttributeOfEntity(Long entityId, String attributeName, String value) {
+        if (isEmptyArguments(attributeName)) return null;
+        return repository.updateAttributeOfEntity(entityId, attributeName, value);
+    }
+
+    @Override
+    public Long updateSubEntityOfEntity(String entityName, String subEntityName, Long emsSubEntityRef) {
+        if (isEmptyArguments(entityName, subEntityName)) return null;
+        return repository.updateSubEntityOfEntity(entityName, subEntityName, emsSubEntityRef);
+    }
+
+    @Override
+    public Long updateSubEntityOfEntity(Long entityId, String subEntityName, Long emsSubEntityRef) {
+        if (isEmptyArguments(subEntityName)) return null;
+        return repository.updateSubEntityOfEntity(entityId, subEntityName, emsSubEntityRef);
+    }
+
+    @Override
+    public Boolean deleteEntity(String entityName) {
+        if (isEmptyArguments(entityName)) return false;
+        return repository.deleteEntity(entityName);
+    }
+
+    @Override
+    public Boolean deleteEntity(Long entityId) {
+        return repository.deleteEntity(entityId);
+    }
+
+    @Override
+    public Boolean deleteAttributeFromEntity(String entityName, String attributeName) {
+        if (isEmptyArguments(entityName, attributeName)) return false;
+        return repository.deleteAttributeFromEntity(entityName, attributeName);
+    }
+
+    @Override
+    public Boolean deleteSubEntityFromEntity(String entityName, String subEntityName) {
+        if (isEmptyArguments(entityName, subEntityName)) return false;
+        return repository.deleteSubEntityFromEntity(entityName, subEntityName);
+    }
+
+    @Override
+    public Boolean deleteAttributeFromEntity(Long entityId, String attributeName) {
+        if (isEmptyArguments(attributeName)) return false;
+        return repository.deleteAttributeFromEntity(entityId, attributeName);
+    }
+
+    @Override
+    public Boolean deleteSubEntityFromEntity(Long entityId, String subEntityName) {
+        if (isEmptyArguments(subEntityName)) return false;
+        return repository.deleteSubEntityFromEntity(entityId, subEntityName);
+    }
+
+    @Override
+    public Boolean hasEntityType(String entityTypeName) {
+        if (isEmptyArguments(entityTypeName)) return false;
+        return repository.hasEntityType(entityTypeName);
+    }
+
+    @Override
+    public Boolean hasAttributeOfEntityType(String entityTypeName, String attributeName) {
+        if (isEmptyArguments(entityTypeName, attributeName)) return false;
+        return repository.hasAttributeOfEntityType(entityTypeName, attributeName);
+    }
+
+    @Override
+    public Boolean hasSubEntityOfEntityType(String entityTypeName, String subEntityName) {
+        if (isEmptyArguments(entityTypeName, subEntityName)) return false;
+        return repository.hasSubEntityOfEntityType(entityTypeName, subEntityName);
     }
 }

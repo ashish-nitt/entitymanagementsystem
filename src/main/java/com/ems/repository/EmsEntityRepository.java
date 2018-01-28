@@ -1,12 +1,12 @@
-package com.ems.service;
+package com.ems.repository;
 
 import com.ems.model.EmsAttributeType;
 import com.ems.model.EmsEntityType;
 
 /**
- * Created by Ashish on 26-01-2018.
+ * Created by Ashish on 28-01-2018.
  */
-public interface EntityService extends EntityTypeService {
+public interface EmsEntityRepository extends EmsEntityTypeRepository {
     //EmsEntity Create
     Long addEntity(String entityTypeName);
     Long addEntity(String entityTypeName, String entityName);

@@ -8,7 +8,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 /**
  * Created by Ashish on 26-01-2018.
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages={"com.ems"})
 public class App extends SpringBootServletInitializer {
     public SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(App.class);

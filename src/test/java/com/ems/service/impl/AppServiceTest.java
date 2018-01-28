@@ -1,8 +1,9 @@
 package com.ems.service.impl;
 
 import com.ems.config.TestConfig;
-import com.ems.service.EntityDefService;
 import com.ems.service.EntityService;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 /**
@@ -20,78 +20,86 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = TestConfig.class, loader = AnnotationConfigContextLoader.class)
 public class AppServiceTest {
     @Autowired
-    EntityDefService entityDefService;
-    @Autowired
     EntityService entityService;
+
+    private Long invalidSubEntityRef;
+
+    @Before
+    public void setUp(){
+        invalidSubEntityRef = -1L;
+    }
 
     @Test
     public void test() throws Exception{
-        testAddNewEntityDef();
-        testAddAttributeToEntityDef();
-        testAddSubEntityToEntityDef();
+        testAddNewEntityType();
+        testAddAttributeOfEntityType();
+        testAddSubEntityOfEntityType();
         testAddEntity();
-        testAddAttributeToEntity();
-        testAddSubEntityToEntity();
-        testUpdateAttributeToEntity();
-        testUpdateSubEntityToEntity();
+        testAddAttributeOfEntity();
+        testAddSubEntityOfEntity();
+        testUpdateAttributeOfEntity();
+        testUpdateSubEntityOfEntity();
         testDeleteAttributeFromEntity();
         testDeleteSubEntityFromEntity();
         testDeleteEntity();
     }
 
-    public void testAddNewEntityDef() throws Exception {
-        assertEquals(-1, entityDefService.addNewEntityDef(""));
-        assertEquals(0, entityDefService.addNewEntityDef("e1"));
-        assertEquals(0, entityDefService.addNewEntityDef("e2"));
-        assertEquals(-1, entityDefService.addNewEntityDef("e1"));
-        assertEquals(-1, entityDefService.addNewEntityDef("e2"));
+    public void testAddNewEntityType() throws Exception {
+        assertNull(entityService.addNewEntityType(""));
+        assertNotNull(entityService.addNewEntityType("t1"));
+        assertNotNull(entityService.addNewEntityType("t2"));
+        assertNotNull(entityService.addNewEntityType("t3"));
+        assertNotNull(entityService.addNewEntityType("t4"));
+        assertNotNull(entityService.addNewEntityType("t5"));
+        assertNull(entityService.addNewEntityType("t1"));
+        assertNull(entityService.addNewEntityType("t2"));
 
-        assertNotNull(entityDefService.getEntityDef("e1"));
-        assertNotNull(entityDefService.getEntityDef("e2"));
-        assertNull(entityDefService.getEntityDef("e3"));
-        assertNull(entityDefService.getEntityDef(""));
+        assertNotNull(entityService.getEntityType("t1"));
+        assertNotNull(entityService.getEntityType("t2"));
+        assertNull(entityService.getEntityType("e3"));
+        assertNull(entityService.getEntityType(""));
     }
 
-    public void testAddAttributeToEntityDef() throws Exception {
-        assertEquals(0, entityDefService.addAttributeToEntityDef("e1", "attr1", "", ""));
-        assertEquals(-1, entityDefService.addAttributeToEntityDef("e1", "attr1", "", ""));
-        assertEquals(0, entityDefService.addAttributeToEntityDef("e1", "attr2", "", ""));
-        assertEquals(-1, entityDefService.addAttributeToEntityDef("e1", "", "", ""));
-        assertEquals(0, entityDefService.addAttributeToEntityDef("e2", "attr1", "", ""));
-        assertEquals(-1, entityDefService.addAttributeToEntityDef("e2", "attr1", "", ""));
-        assertEquals(0, entityDefService.addAttributeToEntityDef("e2", "attr2", "", ""));
+    public void testAddAttributeOfEntityType() throws Exception {
+        assertNotNull(entityService.addAttributeOfEntityType("t1", "a1", "", ""));
+        assertNull(entityService.addAttributeOfEntityType("t1", "a1", "", ""));
+        assertNotNull(entityService.addAttributeOfEntityType("t1", "a2", "", ""));
+        assertNull(entityService.addAttributeOfEntityType("t1", "", "", ""));
+        assertNotNull(entityService.addAttributeOfEntityType("t2", "a1", "", ""));
+        assertNull(entityService.addAttributeOfEntityType("t2", "a1", "", ""));
+        assertNotNull(entityService.addAttributeOfEntityType("t2", "a2", "", ""));
 
-        assertNotNull(entityDefService.getAttributeOfEntityDef("e1", "attr1"));
-        assertNotNull(entityDefService.getAttributeOfEntityDef("e2", "attr1"));
-        assertNull(entityDefService.getAttributeOfEntityDef("e3", "attr1"));
-        assertNull(entityDefService.getAttributeOfEntityDef("e1", "attr3"));
-        assertNull(entityDefService.getAttributeOfEntityDef("e1", ""));
-        assertNull(entityDefService.getAttributeOfEntityDef("", ""));
+        assertNotNull(entityService.getAttributeOfEntityType("t1", "a1"));
+        assertNotNull(entityService.getAttributeOfEntityType("t2", "a1"));
+        assertNull(entityService.getAttributeOfEntityType("e3", "a1"));
+        assertNull(entityService.getAttributeOfEntityType("t1", "a3"));
+        assertNull(entityService.getAttributeOfEntityType("t1", ""));
+        assertNull(entityService.getAttributeOfEntityType("", ""));
     }
 
-    public void testAddSubEntityToEntityDef() throws Exception {
-        assertEquals(0, entityDefService.addSubEntityToEntityDef("e1", "se1", ""));
-        assertEquals(-1, entityDefService.addSubEntityToEntityDef("e1", "se1", ""));
-        assertEquals(0, entityDefService.addSubEntityToEntityDef("e1", "se2", ""));
-        assertEquals(-1, entityDefService.addSubEntityToEntityDef("e1", "", ""));
-        assertEquals(0, entityDefService.addSubEntityToEntityDef("e2", "se1", ""));
-        assertEquals(-1, entityDefService.addSubEntityToEntityDef("e2", "se1", ""));
-        assertEquals(0, entityDefService.addSubEntityToEntityDef("e2", "se2", ""));
+    public void testAddSubEntityOfEntityType() throws Exception {
+        assertNotNull(entityService.addSubEntityOfEntityType("t1", "se1", "t1"));
+        assertNull(entityService.addSubEntityOfEntityType("t1", "se1", "t1"));
+        assertNotNull(entityService.addSubEntityOfEntityType("t1", "se2", "t2"));
+        assertNull(entityService.addSubEntityOfEntityType("t1", "", "t2"));
+        assertNotNull(entityService.addSubEntityOfEntityType("t2", "se1", "t3"));
+        assertNull(entityService.addSubEntityOfEntityType("t2", "se1", "t4"));
+        assertNotNull(entityService.addSubEntityOfEntityType("t2", "se2", "t5"));
 
-        assertNotNull(entityDefService.getSubEntityOfEntityDef("e1", "se1"));
-        assertNotNull(entityDefService.getSubEntityOfEntityDef("e2", "se1"));
-        assertNull(entityDefService.getAttributeOfEntityDef("e3", "se3"));
-        assertNull(entityDefService.getAttributeOfEntityDef("e1", "se3"));
-        assertNull(entityDefService.getAttributeOfEntityDef("e1", ""));
-        assertNull(entityDefService.getAttributeOfEntityDef("", ""));
+        assertNotNull(entityService.getSubEntityOfEntityType("t1", "se1"));
+        assertNotNull(entityService.getSubEntityOfEntityType("t2", "se1"));
+        assertNull(entityService.getAttributeOfEntityType("e3", "se3"));
+        assertNull(entityService.getAttributeOfEntityType("t1", "se3"));
+        assertNull(entityService.getAttributeOfEntityType("t1", ""));
+        assertNull(entityService.getAttributeOfEntityType("", ""));
     }
 
     
     public void testAddEntity() throws Exception {
-        assertEquals(-1, entityService.addEntity("e1", ""));
-        assertEquals(0, entityService.addEntity("e1", "v1"));
-        assertEquals(0, entityService.addEntity("e2", "v2"));
-        assertEquals(-1, entityService.addEntity("e1", "v1"));
+        assertNull(entityService.addEntity("t1", ""));
+        assertNotNull(entityService.addEntity("t1", "v1"));
+        assertNotNull(entityService.addEntity("t2", "v2"));
+        assertNull(entityService.addEntity("t1", "v1"));
 
         assertNotNull(entityService.getEntity("v1"));
         assertNotNull(entityService.getEntity("v2"));
@@ -100,11 +108,11 @@ public class AppServiceTest {
     }
 
     
-    public void testAddAttributeToEntity() throws Exception {
-        assertEquals(-1, entityService.addAttributeToEntity("v1", "", ""));
-        assertEquals(0, entityService.addAttributeToEntity("v1", "a1", "v1a1"));
-        assertEquals(0, entityService.addAttributeToEntity("v1", "a2", "v1a2"));
-        assertEquals(-1, entityService.addAttributeToEntity("v1", "a1", "v1a1"));
+    public void testAddAttributeOfEntity() throws Exception {
+        assertNull(entityService.addAttributeOfEntity("v1", "", ""));
+        assertNotNull(entityService.addAttributeOfEntity("v1", "a1", "v1a1"));
+        assertNotNull(entityService.addAttributeOfEntity("v1", "a2", "v1a2"));
+        assertNull(entityService.addAttributeOfEntity("v1", "a1", "v1a1"));
 
         assertTrue(entityService.getAttributeOfEntity("v1","a1").equals("v1a1"));
         assertTrue(entityService.getAttributeOfEntity("v1","a2").equals("v1a2"));
@@ -112,46 +120,53 @@ public class AppServiceTest {
     }
 
     
-    public void testAddSubEntityToEntity() throws Exception {
-        assertEquals(-1, entityService.addSubEntityToEntity("v1", "", ""));
-        assertEquals(0, entityService.addSubEntityToEntity("v1", "s1", "v1s1"));
-        assertEquals(0, entityService.addSubEntityToEntity("v1", "s2", "v1s2"));
-        assertEquals(-1, entityService.addSubEntityToEntity("v1", "s1", "v1s1"));
+    public void testAddSubEntityOfEntity() throws Exception {
+        Long v1s1 = entityService.addEntity("t1", "v1s1");
+        Long v1s2 = entityService.addEntity("t1", "v1s2");
+        assertNull(entityService.addSubEntityOfEntity("v1", "", invalidSubEntityRef));
+        assertNotNull(entityService.addSubEntityOfEntity("v1", "s1", v1s1));
+        assertNotNull(entityService.addSubEntityOfEntity("v1", "s2", v1s2));
+        assertNull(entityService.addSubEntityOfEntity("v1", "s1", invalidSubEntityRef));
 
-        assertTrue(entityService.getSubEntityOfEntity("v1","s1").equals("v1s1"));
-        assertTrue(entityService.getSubEntityOfEntity("v1","s2").equals("v1s2"));
+        assertTrue(entityService.getSubEntityOfEntity("v1","s1").equals(v1s1));
+        assertTrue(entityService.getSubEntityOfEntity("v1","s2").equals(v1s2));
     }
 
     
-    public void testUpdateAttributeToEntity() throws Exception {
-        assertEquals(-1, entityService.updateAttributeToEntity("v1", "", ""));
-        assertEquals(0, entityService.updateAttributeToEntity("v1", "a1", "v1a1u1"));
-        assertEquals(0, entityService.updateAttributeToEntity("v1", "a2", "v1a2u1"));
-        assertEquals(0, entityService.updateAttributeToEntity("v1", "a1", "v1a1u1"));
-        assertEquals(-1, entityService.updateAttributeToEntity("v1", "a3", "v1a3u1"));
+    public void testUpdateAttributeOfEntity() throws Exception {
+        assertNull(entityService.updateAttributeOfEntity("v1", "", ""));
+        assertNotNull(entityService.updateAttributeOfEntity("v1", "a1", "v1a1u1"));
+        assertNotNull(entityService.updateAttributeOfEntity("v1", "a2", "v1a2u1"));
+        assertNotNull(entityService.updateAttributeOfEntity("v1", "a1", "v1a1u1"));
+        assertNull(entityService.updateAttributeOfEntity("v1", "a3", "v1a3u1"));
 
         assertTrue(entityService.getAttributeOfEntity("v1","a1").equals("v1a1u1"));
         assertTrue(entityService.getAttributeOfEntity("v1","a2").equals("v1a2u1"));
     }
 
     
-    public void testUpdateSubEntityToEntity() throws Exception {
-        assertEquals(-1, entityService.updateSubEntityToEntity("v1", "", ""));
-        assertEquals(0, entityService.updateSubEntityToEntity("v1", "s1", "v1s1u1"));
-        assertEquals(0, entityService.updateSubEntityToEntity("v1", "s2", "v1s2u1"));
-        assertEquals(0, entityService.updateSubEntityToEntity("v1", "s1", "v1s1u1"));
-        assertEquals(-1, entityService.updateSubEntityToEntity("v1", "s3", "v1s3u1"));
+    public void testUpdateSubEntityOfEntity() throws Exception {
+        Long v1s1u1 = entityService.addEntity("t1", "v1s1u1");
+        Long v1s2u1 = entityService.addEntity("t1", "v1s2u1");
+        assertNull(entityService.updateSubEntityOfEntity("v1", "", invalidSubEntityRef));
+        assertNotNull(entityService.updateSubEntityOfEntity("v1", "se1", v1s1u1));
+        assertNotNull(entityService.updateSubEntityOfEntity("v1", "se2", v1s2u1));
+        assertNotNull(entityService.updateSubEntityOfEntity("v1", "se1", v1s1u1));
+        assertNull(entityService.updateSubEntityOfEntity("v1", "se3", invalidSubEntityRef));
 
-        assertTrue(entityService.getSubEntityOfEntity("v1","s1").equals("v1s1u1"));
-        assertTrue(entityService.getSubEntityOfEntity("v1","s2").equals("v1s2u1"));
+        assertTrue(entityService.getSubEntityOfEntity("v1","se1").equals(v1s1u1));
+        assertTrue(entityService.getSubEntityOfEntity("v1","se2").equals(v1s2u1));
     }
 
 
     public void testDeleteEntity() throws Exception {
-        assertEquals(-1, entityService.deleteEntity(""));
-        assertEquals(0, entityService.deleteEntity("v1"));
-        assertEquals(0, entityService.deleteEntity("v2"));
-        assertEquals(-1, entityService.deleteEntity("v1"));
+        assertNotNull(entityService.getEntity("v1"));
+        assertNotNull(entityService.getEntity("v2"));
+
+        assertFalse(entityService.deleteEntity(""));
+        assertTrue(entityService.deleteEntity("v1"));
+        assertTrue(entityService.deleteEntity("v2"));
+        assertFalse(entityService.deleteEntity("v1"));
 
         assertNull(entityService.getEntity("v1"));
         assertNull(entityService.getEntity("v2"));
@@ -159,10 +174,10 @@ public class AppServiceTest {
 
     
     public void testDeleteAttributeFromEntity() throws Exception {
-        assertEquals(-1, entityService.deleteAttributeFromEntity("v1", ""));
-        assertEquals(0, entityService.deleteAttributeFromEntity("v1", "a1"));
-        assertEquals(0, entityService.deleteAttributeFromEntity("v1", "a2"));
-        assertEquals(-1, entityService.deleteAttributeFromEntity("v1", "a1"));
+        assertFalse(entityService.deleteAttributeFromEntity("v1", ""));
+        assertTrue(entityService.deleteAttributeFromEntity("v1", "a1"));
+        assertTrue(entityService.deleteAttributeFromEntity("v1", "a2"));
+        assertFalse(entityService.deleteAttributeFromEntity("v1", "a1"));
 
         assertNull(entityService.getAttributeOfEntity("v1", "a1"));
         assertNull(entityService.getAttributeOfEntity("v1", "a2"));
@@ -170,12 +185,15 @@ public class AppServiceTest {
 
     
     public void testDeleteSubEntityFromEntity() throws Exception {
-        assertEquals(-1, entityService.deleteSubEntityFromEntity("v1", ""));
-        assertEquals(0, entityService.deleteSubEntityFromEntity("v1", "s1"));
-        assertEquals(0, entityService.deleteSubEntityFromEntity("v1", "s2"));
-        assertEquals(-1, entityService.deleteSubEntityFromEntity("v1", "s1"));
+        assertNotNull(entityService.getSubEntityOfEntity("v1", "s1"));
+        assertNotNull(entityService.getSubEntityOfEntity("v1", "s2"));
 
-        assertNull(entityService.getAttributeOfEntity("v1", "s1"));
-        assertNull(entityService.getAttributeOfEntity("v1", "s2"));
+        assertFalse(entityService.deleteSubEntityFromEntity("v1", ""));
+        assertTrue(entityService.deleteSubEntityFromEntity("v1", "s1"));
+        assertTrue(entityService.deleteSubEntityFromEntity("v1", "s2"));
+        assertFalse(entityService.deleteSubEntityFromEntity("v1", "s1"));
+
+        assertNull(entityService.getSubEntityOfEntity("v1", "s1"));
+        assertNull(entityService.getSubEntityOfEntity("v1", "s2"));
     }
 }
