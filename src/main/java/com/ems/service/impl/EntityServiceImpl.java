@@ -1,6 +1,6 @@
 package com.ems.service.impl;
 
-import com.ems.model.EmsAttributeType;
+import com.ems.model.EmsFieldType;
 import com.ems.model.EmsEntityType;
 import com.ems.repository.EmsEntityRepository;
 import com.ems.service.EntityService;
@@ -27,7 +27,7 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public EmsAttributeType addAttributeOfEntityType(String entityTypeName, String attributeName, String attributeType, String renderingEngineDetails) {
+    public EmsFieldType addAttributeOfEntityType(String entityTypeName, String attributeName, String attributeType, String renderingEngineDetails) {
         if (isEmptyArguments(entityTypeName, attributeName)) return null;
         return repository.addAttributeOfEntityType(entityTypeName, attributeName, attributeType, renderingEngineDetails);
     }
@@ -45,7 +45,7 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public EmsAttributeType getAttributeOfEntityType(String entityTypeName, String attributeTypeName) {
+    public EmsFieldType getAttributeOfEntityType(String entityTypeName, String attributeTypeName) {
         if (isEmptyArguments(entityTypeName)) return null;
         return repository.getAttributeOfEntityType(entityTypeName, attributeTypeName);
     }

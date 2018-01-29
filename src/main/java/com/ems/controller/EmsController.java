@@ -1,16 +1,17 @@
 package com.ems.controller;
 
-import com.ems.model.EmsAttributeType;
 import com.ems.model.EmsEntityType;
+import com.ems.model.EmsEntityTypeFieldRef;
+import com.ems.model.EmsFieldType;
 import com.ems.service.EntityService;
-import org.springframework.asm.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,47 +50,49 @@ public class EmsController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.POST)
-    public ResponseEntity<Map<String, EmsAttributeType>> addAttributeOfEntityType(
+    public ResponseEntity<Map<String,EmsEntityTypeFieldRef>> addAttributesOfEntityType(
             @PathVariable("entitytype") String entityType,
-            @RequestBody Map<String, EmsAttributeType> attributes) {
+            @RequestBody Map<String, EmsFieldType> attributesOrSubEntities) {
         System.out.println("EmsController.addAttributeOfEntityType");
-        System.out.println("attributes = [" + attributes + "]");
+        System.out.println("attributesOrSubEntities = [" + attributesOrSubEntities + "]");
+        Map<String, EmsEntityTypeFieldRef> resultRefsMap = new HashMap<>();
         try {
             EmsEntityType emsEntityType = entityService.getEntityType(entityType);
             if (emsEntityType != null) {
-                attributes.forEach((attr, attrType) -> {
-                    entityService.addAttributeOfEntityType(entityType,
-                            attr,
-                            attrType.getAttributeTypeName(),
-                            attrType.getRenderingDetails());
-                });
-                return new ResponseEntity<>(emsEntityType.getAttributes(), HttpStatus.BAD_REQUEST);
+                int count = 0;
+                for(Map.Entry<String, EmsFieldType> fieldDetails : attributesOrSubEntities.entrySet()) {
+                    if (! fieldDetails.getValue().getSubEntity()) {
+                        EmsFieldType emsFieldType = entityService.addAttributeOfEntityType(entityType,
+                                fieldDetails.getKey(),
+                                fieldDetails.getValue().getFieldTypeName(),
+                                fieldDetails.getValue().getRenderingDetailsIfAttribute());
+                        if (emsFieldType != null) {
+                            resultRefsMap.put(fieldDetails.getKey(), new EmsEntityTypeFieldRef(entityType, fieldDetails.getKey()));
+                            count++;
+                        } else
+                            resultRefsMap.put(fieldDetails.getKey(), new EmsEntityTypeFieldRef("", ""));
+                    } else {
+                        EmsEntityType emsFieldType = entityService.addSubEntityOfEntityType(entityType,
+                                fieldDetails.getKey(),
+                                fieldDetails.getValue().getFieldTypeName());
+                        if (emsFieldType != null) {
+                            resultRefsMap.put(fieldDetails.getKey(), new EmsEntityTypeFieldRef(entityType, fieldDetails.getKey()));
+                            count++;
+                        } else
+                            resultRefsMap.put(fieldDetails.getKey(), new EmsEntityTypeFieldRef("", ""));
+                    }
+                }
+                if (count == 0)
+                    return new ResponseEntity<>(resultRefsMap, HttpStatus.BAD_REQUEST);
+                else if (count < attributesOrSubEntities.size())
+                    return new ResponseEntity<>(resultRefsMap, HttpStatus.PARTIAL_CONTENT);
+                else
+                    return new ResponseEntity<>(resultRefsMap, HttpStatus.CREATED);
             }
         } catch (Exception e) {
         }
-        return new ResponseEntity<>(attributes, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(resultRefsMap, HttpStatus.BAD_REQUEST);
     }
-
-/*    @RequestMapping(value = "/entitytypes/{entitytype}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, String>> addSubEntityOfEntityType(
-            @PathVariable("entitytype") String entityType,
-            @RequestBody Map<String, String> subEntities) {
-        System.out.println("EmsController.addSubEntityOfEntityType");
-        System.out.println("SubEntitys = [" + subEntities + "]");
-        try {
-            EmsEntityType emsEntityType = entityService.getEntityType(entityType);
-            if (emsEntityType != null) {
-                subEntities.forEach((subEntity, subEntityType) -> {
-                    entityService.addSubEntityOfEntityType(entityType,
-                            subEntity,
-                            subEntityType);
-                });
-                return new ResponseEntity<>(emsEntityType.getSubEntities(), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-        }
-        return new ResponseEntity<>(subEntities, HttpStatus.BAD_REQUEST);
-    }*/
 
     //Read DbEntity Definition
     @RequestMapping(value = "/entitytypes/{entitytype}",
@@ -102,10 +105,10 @@ public class EmsController {
         try {
             EmsEntityType emsEntityType = entityService.getEntityType(entityType);
             if (emsEntityType != null)
-                return new ResponseEntity<EmsEntityType>(emsEntityType, HttpStatus.OK);
+                return new ResponseEntity<>(emsEntityType, HttpStatus.OK);
         } catch (Exception e) {
         }
-        return new ResponseEntity<EmsEntityType>(new EmsEntityType(entityType), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new EmsEntityType(entityType), HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/entitytypes/{entitytype}/{attributeorsubentityname}",
@@ -117,17 +120,19 @@ public class EmsController {
         System.out.println("EmsController.getAttributeOfEntityType");
         System.out.println("entityType = [" + entityType + "], attributeOrSubEntityName = [" + attributeOrSubEntityName + "]");
         try {
-            EmsAttributeType emsAttributeType = entityService.getAttributeOfEntityType(entityType, attributeOrSubEntityName);
-            if (emsAttributeType != null)
-                return new ResponseEntity<EmsAttributeType>(emsAttributeType, HttpStatus.OK);
+            EmsFieldType emsFieldType = entityService.getAttributeOfEntityType(entityType, attributeOrSubEntityName);
+            if (emsFieldType != null)
+                return new ResponseEntity<>(Collections.singletonMap(
+                        attributeOrSubEntityName, emsFieldType), HttpStatus.OK);
             else {
                 EmsEntityType emsEntityType = entityService.getSubEntityOfEntityType(entityType, attributeOrSubEntityName);
                 if (emsEntityType != null)
-                    return new ResponseEntity<EmsEntityType>(emsEntityType, HttpStatus.OK);
+                    return new ResponseEntity<>(Collections.singletonMap(
+                            attributeOrSubEntityName, emsEntityType), HttpStatus.OK);
             }
         } catch (Exception e) {
         }
-        return new ResponseEntity<String>(attributeOrSubEntityName, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(attributeOrSubEntityName, HttpStatus.NOT_FOUND);
     }
 
     //EmsEntity Create

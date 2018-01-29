@@ -1,6 +1,6 @@
 package com.ems.repository.mapimpl;
 
-import com.ems.model.EmsAttributeType;
+import com.ems.model.EmsFieldType;
 import com.ems.model.EmsEntityType;
 import com.ems.repository.EmsEntityTypeRepository;
 import org.springframework.util.StringUtils;
@@ -20,12 +20,12 @@ public class EmsEntityTypeRepositoryImpl extends EmsEntityRepositorySimpleMapCon
     }
 
     @Override
-    public EmsAttributeType addAttributeOfEntityType(String entityTypeName, String attributeName, String attributeType, String renderingEngineDetails) {
+    public EmsFieldType addAttributeOfEntityType(String entityTypeName, String attributeName, String attributeType, String renderingEngineDetails) {
         EmsEntityType emsEntityType = getEntityType(entityTypeName);
         if (emsEntityType != null) {
-            EmsAttributeType emsAttributeType = new EmsAttributeType(attributeName, attributeType);
-            emsEntityType.getAttributes().putIfAbsent(attributeName, emsAttributeType);
-            if (emsEntityType.getAttributeType(attributeName).equals(emsAttributeType)) return emsAttributeType;
+            EmsFieldType emsFieldType = new EmsFieldType(attributeName, attributeType);
+            emsEntityType.getAttributes().putIfAbsent(attributeName, emsFieldType);
+            if (emsEntityType.getAttributeType(attributeName) == emsFieldType) return emsFieldType;
         }
         return null;
     }
@@ -36,9 +36,10 @@ public class EmsEntityTypeRepositoryImpl extends EmsEntityRepositorySimpleMapCon
         EmsEntityType emsSubEntityType = getEntityType(subEntityType);
         if (emsEntityType != null && emsSubEntityType != null) {
             if (!emsEntityType.getSubEntities().containsKey(subEntityName)) {
-                emsEntityType.getSubEntities().putIfAbsent(subEntityName, subEntityType);
-                String subEntityTypeName = emsEntityType.getSubEntityType(subEntityName);
-                if (subEntityType.equals(subEntityTypeName)) {
+                EmsFieldType subEntityFieldType = new EmsFieldType(subEntityType);
+                emsEntityType.getSubEntities().putIfAbsent(subEntityName, subEntityFieldType);
+                EmsFieldType subEntityFieldType1 = emsEntityType.getSubEntityType(subEntityName);
+                if (subEntityFieldType1.getFieldTypeName().equals(subEntityFieldType.getFieldTypeName())) {
                     return emsSubEntityType;
                 }
             }
@@ -68,7 +69,7 @@ public class EmsEntityTypeRepositoryImpl extends EmsEntityRepositorySimpleMapCon
     }
 
     @Override
-    public EmsAttributeType getAttributeOfEntityType(String entityTypeName, String attributeTypeName) {
+    public EmsFieldType getAttributeOfEntityType(String entityTypeName, String attributeTypeName) {
         EmsEntityType emsEntityType = getEntityType(entityTypeName);
         if (emsEntityType != null) {
             return emsEntityType.getAttributes().get(attributeTypeName);
@@ -80,9 +81,9 @@ public class EmsEntityTypeRepositoryImpl extends EmsEntityRepositorySimpleMapCon
     public EmsEntityType getSubEntityOfEntityType(String entityTypeName, String subEntityName) {
         EmsEntityType emsEntityType = getEntityType(entityTypeName);
         if (emsEntityType != null) {
-            String subEntityType = emsEntityType.getSubEntityType(subEntityName);
+            EmsFieldType subEntityType = emsEntityType.getSubEntityType(subEntityName);
             if (subEntityType != null)
-                return getEntityType(subEntityType);
+                return getEntityType(subEntityType.getFieldTypeName());
         }
         return null;
     }

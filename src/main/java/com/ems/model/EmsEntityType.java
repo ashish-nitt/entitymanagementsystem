@@ -1,11 +1,7 @@
 package com.ems.model;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -13,10 +9,14 @@ import java.util.Map;
  */
 public class EmsEntityType {
     private String entityTypeName;
-    private Map<String, EmsAttributeType> attributes;
-    private Map<String, String> subEntities;
+    private Map<String, EmsFieldType> attributes;
+    private Map<String, EmsFieldType> subEntities;
 
-    public EmsEntityType(){}
+    public EmsEntityType(){
+        this.entityTypeName = "";
+        this.attributes = Collections.synchronizedMap(new HashMap<>());
+        this.subEntities = Collections.synchronizedMap(new HashMap<>());
+    }
 
     public EmsEntityType(String entityTypeName) {
         this.entityTypeName = entityTypeName;
@@ -39,19 +39,19 @@ public class EmsEntityType {
         return entityTypeName;
     }
 
-    public Map<String, EmsAttributeType> getAttributes() {
+    public Map<String, EmsFieldType> getAttributes() {
         return attributes;
     }
 
-    public Map<String, String> getSubEntities() {
+    public Map<String, EmsFieldType> getSubEntities() {
         return subEntities;
     }
 
-    public EmsAttributeType getAttributeType(String attributeName) {
+    public EmsFieldType getAttributeType(String attributeName) {
         return attributes.get(attributeName);
     }
 
-    public String getSubEntityType(String subEntityName) {
+    public EmsFieldType getSubEntityType(String subEntityName) {
         return subEntities.get(subEntityName);
     }
 

@@ -1,8 +1,5 @@
 package com.ems.service;
 
-import com.ems.model.EmsAttributeType;
-import com.ems.model.EmsEntityType;
-
 /**
  * Created by Ashish on 26-01-2018.
  */

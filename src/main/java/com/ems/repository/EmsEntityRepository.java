@@ -1,8 +1,5 @@
 package com.ems.repository;
 
-import com.ems.model.EmsAttributeType;
-import com.ems.model.EmsEntityType;
-
 /**
  * Created by Ashish on 28-01-2018.
  */
