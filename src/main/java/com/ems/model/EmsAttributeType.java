@@ -1,11 +1,18 @@
 package com.ems.model;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * Created by Ashish on 26-01-2018.
  */
 public class EmsAttributeType {
-    private final String attributeTypeName;
-    private final String renderingDetails;
+    @JsonProperty("attributeTypeName")
+    private String attributeTypeName;
+    @JsonProperty("renderingDetails")
+    private String renderingDetails;
+
+    public EmsAttributeType() {
+    }
 
     public EmsAttributeType(String attributeTypeName, String renderingDetails) {
         this.attributeTypeName = attributeTypeName;

@@ -22,3 +22,6 @@ For the remaining the code is there and tested with junit.
 Only the REST endpoint to service call has to be coded.
 It is in very half baked state to be treated as an enterprise application and is just for view purpose.
 
+To execute run the following comands:
+1. Build : mvn clean install
+2. Run : java -jar target/ems.jar

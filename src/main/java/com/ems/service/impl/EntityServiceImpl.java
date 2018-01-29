@@ -199,6 +199,11 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
+    public EmsEntityType addNewEntityType(EmsEntityType emsEntityType) {
+        return repository.addNewEntityType(emsEntityType);
+    }
+
+    @Override
     public Boolean deleteSubEntityFromEntity(String entityName, String subEntityName) {
         if (isEmptyArguments(entityName, subEntityName)) return false;
         return repository.deleteSubEntityFromEntity(entityName, subEntityName);

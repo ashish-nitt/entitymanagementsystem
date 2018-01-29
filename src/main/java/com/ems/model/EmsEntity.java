@@ -6,11 +6,11 @@ import java.util.HashMap;
  * Created by Ashish on 26-01-2018.
  */
 public class EmsEntity {
-    private final String entityType;
-    private final Long entityId;
-    private final String entityName;
-    private final MyHashTable<String, String> attributes;
-    private final MyHashTable<String, Long> subEntities;
+    private String entityType;
+    private Long entityId;
+    private String entityName;
+    private MyHashTable<String, String> attributes;
+    private MyHashTable<String, Long> subEntities;
 
     public EmsEntity(String entityType, Long entityId, String entityName) {
         this.entityType = entityType;
@@ -26,6 +26,9 @@ public class EmsEntity {
         this.entityName = "";
         this.attributes = new MyHashTable<>();
         this.subEntities = new MyHashTable<>();
+    }
+
+    public EmsEntity() {
     }
 
     public String getEntityName() {

@@ -9,6 +9,7 @@ import com.ems.model.EmsEntityType;
 public interface EntityTypeService {
     //Create DbEntity Definition
     EmsEntityType addNewEntityType(String entityTypeName);
+    EmsEntityType addNewEntityType(EmsEntityType emsEntityType);
     EmsAttributeType addAttributeOfEntityType(String entityTypeName, String attributeTypeName, String attributeType, String renderingEngineDetails);
     EmsEntityType addSubEntityOfEntityType(String entityTypeName, String subEntityName, String subEntityType);
     //Read DbEntity Definition

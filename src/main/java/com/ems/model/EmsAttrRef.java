@@ -4,12 +4,15 @@ package com.ems.model;
  * Created by Ashish on 27-01-2018.
  */
 public class EmsAttrRef {
-    private final Long entityId;
-    private final String fieldName;
+    private Long entityId;
+    private String fieldName;
 
     private EmsAttrRef(Long entityId, String fieldName) {
         this.entityId = entityId;
         this.fieldName = fieldName;
+    }
+
+    public EmsAttrRef() {
     }
 
     public static EmsAttrRef from(Long entityId, String fieldName) {

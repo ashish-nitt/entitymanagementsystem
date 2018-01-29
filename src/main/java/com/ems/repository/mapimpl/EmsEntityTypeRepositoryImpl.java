@@ -15,6 +15,11 @@ public class EmsEntityTypeRepositoryImpl extends EmsEntityRepositorySimpleMapCon
     }
 
     @Override
+    public EmsEntityType addNewEntityType(EmsEntityType emsEntityType) {
+        return entityTypeNameToentityType.addNew(emsEntityType.getEntityTypeName(), new EmsEntityType(emsEntityType));
+    }
+
+    @Override
     public EmsAttributeType addAttributeOfEntityType(String entityTypeName, String attributeName, String attributeType, String renderingEngineDetails) {
         EmsEntityType emsEntityType = getEntityType(entityTypeName);
         if (emsEntityType != null) {

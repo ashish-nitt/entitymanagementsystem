@@ -4,8 +4,8 @@ package com.ems.model;
  * Created by Ashish on 27-01-2018.
  */
 public class EmsVal {
-    private final Boolean isAttribute;
-    private final String value;
+    private Boolean isAttribute;
+    private String value;
 
     private EmsVal(String value) {
         this.isAttribute = true;
@@ -15,6 +15,9 @@ public class EmsVal {
     private EmsVal(Long value) {
         this.isAttribute = false;
         this.value = String.valueOf(value);
+    }
+
+    public EmsVal() {
     }
 
     public static EmsVal newAttributeValue(String value) {
